@@ -45,7 +45,7 @@ public class FuncionarioService {
         return funcionarios.stream().min(Comparator.comparing(Funcionario::getDataNascimento));
     }
 
-    public List<Funcionario> ordernarPorNome(List<Funcionario> funcionarios) {
+    public List<Funcionario> ordenarPorNome(List<Funcionario> funcionarios) {
         return funcionarios.stream().sorted(Comparator.comparing(Funcionario::getNome)).toList();
     }
 
@@ -53,7 +53,7 @@ public class FuncionarioService {
         return funcionarios.stream().map(Funcionario::getSalario).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public BigDecimal quantidadeSalarioMinimos(Funcionario funcionario, BigDecimal salarioMinimo) {
+    public BigDecimal quantidadeSalariosMinimos(Funcionario funcionario, BigDecimal salarioMinimo) {
         return funcionario.getSalario().divide(salarioMinimo, ESCALA_MONETARIA, RoundingMode.HALF_UP);
     }
 
