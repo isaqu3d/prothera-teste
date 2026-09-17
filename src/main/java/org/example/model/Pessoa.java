@@ -3,6 +3,11 @@ package org.example.model;
 import java.time.LocalDate;
 
 public class Pessoa {
-    String nome;
-    LocalDate data;
+    private String nome;
+    private LocalDate data;
+
+    public Pessoa(String nome, LocalDate data) {
+        this.nome = nome;
+        this.data = data;
+    }
 }
