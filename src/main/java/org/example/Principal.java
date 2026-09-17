@@ -62,5 +62,26 @@ public class Principal {
         // 3.8 - Imprimir os funcionários que fazem aniversário nos meses 10 e 12
         printer.imprimirLista("3.8 - Aniversariantes de outubro e dezembro",
                 service.aniversariantesNosMeses(funcionarios, 10, 12));
+
+        // 3.9 - Imprimir o funcionário com a maior idade (nome e idade)
+        printer.imprimirMaisVelho("3.9 - Funcionário com maior idade",
+                service.maisVelho(funcionarios));
+
+        // 3.10 - Imprimir a lista de funcionários por ordem alfabética
+        printer.imprimirLista("3.10 - Funcionários em ordem alfabética",
+                service.ordenarPorNome(funcionarios));
+
+        // 3.11 - Imprimir o total dos salários dos funcionários
+        printer.imprimirTotalSalarios("3.11 - Total dos salários",
+                service.totalSalarios(funcionarios));
+
+        // 3.12 - Imprimir quantos salários mínimos ganha cada funcionário
+        Map<Funcionario, BigDecimal> salariosMinimos = new LinkedHashMap<>();
+        funcionarios.forEach(funcionario ->
+                salariosMinimos.put(funcionario,
+                        service.quantidadeSalariosMinimos(funcionario, SALARIO_MINIMO)));
+
+        printer.imprimirSalariosMinimos("3.12 - Salários mínimos por funcionário", salariosMinimos);
+
     }
 }
