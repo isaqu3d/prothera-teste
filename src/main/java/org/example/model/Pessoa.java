@@ -4,10 +4,30 @@ import java.time.LocalDate;
 
 public class Pessoa {
     private String nome;
-    private LocalDate data;
+    private LocalDate dataNascimento;
 
-    public Pessoa(String nome, LocalDate data) {
+    public Pessoa(String nome, LocalDate dataNascimento) {
         this.nome = nome;
-        this.data = data;
+        this.dataNascimento = dataNascimento;
     }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+
+    public LocalDate dataNascimento() {
+        return dataNascimento;
+    }
+
+    public void dataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
+
+
+
 }
