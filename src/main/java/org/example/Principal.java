@@ -4,6 +4,7 @@ import org.example.model.Funcionario;
 import org.example.model.Pessoa;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
@@ -11,6 +12,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Principal {
     private static final DateTimeFormatter FORMATO_DATA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -47,5 +50,42 @@ public class Principal {
 
         System.out.println("Funcionarios cadstrados: " + funcionarios.size());
 
+
+
+        BigDecimal percentualAumento = new BigDecimal("1.10");
+
+        funcionarios.forEach(funcionario ->
+                funcionario.setSalario(
+                        funcionario.getSalario()
+                                .multiply(percentualAumento)
+                                .setScale(2, RoundingMode.HALF_UP)
+                )
+        );
+
+        System.out.println("=== 3.4 - Após aumento de 10% ===");
+        funcionarios.forEach(funcionario ->
+                System.out.printf("%-10s | %12s%n",
+                        funcionario.getNome(),
+                        FORMATO_SALARIO.format(funcionario.getSalario()))
+        );
+
+
+
+
+        Map<String, List<Funcionario>> funcionariosPorFuncao =
+                funcionarios.stream()
+                        .collect(Collectors.groupingBy(Funcionario::getFuncao));
+
+
+        System.out.println("=== 3.6 - Funcionários por função ===");
+        funcionariosPorFuncao.forEach((funcao, lista) -> {
+            System.out.println("\n" + funcao + ":");
+            lista.forEach(funcionario ->
+                    System.out.printf("  %-10s | %s | %12s%n",
+                            funcionario.getNome(),
+                            funcionario.getDataNascimento().format(FORMATO_DATA),
+                            FORMATO_SALARIO.format(funcionario.getSalario()))
+            );
+        });
     }
 }
