@@ -20,9 +20,9 @@ public class FuncionarioService {
     public void aplicarAumento(List<Funcionario> funcionarios, BigDecimal percentual) {
         BigDecimal multiplicador = BigDecimal.ONE.add(percentual);
 
-       funcionarios.forEach(funcionario -> funcionario.setSalario(
-               funcionario.getSalario().multiply(multiplicador).setScale(ESCALA_MONETARIA, RoundingMode.HALF_UP)
-       ));
+        funcionarios.forEach(funcionario -> funcionario.setSalario(
+                funcionario.getSalario().multiply(multiplicador).setScale(ESCALA_MONETARIA, RoundingMode.HALF_UP)
+        ));
     }
 
     public Map<String, List<Funcionario>> agruparPorFuncao(List<Funcionario> funcionarios) {
@@ -32,7 +32,7 @@ public class FuncionarioService {
     public List<Funcionario> aniversariantesNosMeses(List<Funcionario> funcionarios, int... meses) {
         return funcionarios.stream().filter(funcionario -> {
             int mes = funcionario.getDataNascimento().getMonthValue();
-            for(int mesBuscado: meses) {
+            for (int mesBuscado : meses) {
                 if (mes == mesBuscado) {
                     return true;
                 }
@@ -45,6 +45,16 @@ public class FuncionarioService {
         return funcionarios.stream().min(Comparator.comparing(Funcionario::getDataNascimento));
     }
 
+    public List<Funcionario> ordernarPorNome(List<Funcionario> funcionarios) {
+        return funcionarios.stream().sorted(Comparator.comparing(Funcionario::getNome)).toList();
+    }
 
+    public BigDecimal totalSalarios(List<Funcionario> funcionarios) {
+        return funcionarios.stream().map(Funcionario::getSalario).reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public BigDecimal quantidadeSalarioMinimos(Funcionario funcionario, BigDecimal salarioMinimo) {
+        return funcionario.getSalario().divide(salarioMinimo, ESCALA_MONETARIA, RoundingMode.HALF_UP);
+    }
 
 }
