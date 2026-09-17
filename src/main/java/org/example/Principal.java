@@ -1,7 +1,8 @@
 package org.example;
 
 import org.example.model.Funcionario;
-import org.example.model.Pessoa;
+import org.example.service.FuncionarioService;
+import org.example.view.FuncionarioPrinter;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -9,19 +10,23 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.*;
+
+
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
-
 public class Principal {
-    private static final DateTimeFormatter FORMATO_DATA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private static final DecimalFormat FORMATO_SALARIO =
-            new DecimalFormat("#,##0.00", new DecimalFormatSymbols(new Locale("pt", "BR")));
+
+    private static final BigDecimal SALARIO_MINIMO = new BigDecimal("1212.00");
+    private static final BigDecimal PERCENTUAL_AUMENTO = new BigDecimal("0.10");
 
     public static void main(String[] args) {
 
+        FuncionarioService service = new FuncionarioService();
+        FuncionarioPrinter printer = new FuncionarioPrinter();
 
         List<Funcionario> funcionarios = new ArrayList<>(List.of(
                 new Funcionario("Maria", LocalDate.of(2000, 10, 18), new BigDecimal("2009.44"), "Operador"),
@@ -36,56 +41,26 @@ public class Principal {
                 new Funcionario("Helena", LocalDate.of(1996, 9, 2), new BigDecimal("2799.93"), "Gerente")
         ));
 
+        printer.imprimirLista(" Lista de TODOS os funcionários", funcionarios);
 
-        funcionarios.removeIf(funcionario -> funcionario.getNome().equals("João"));
+        // 3.2 - Remover o funcionário "João" da lista
+        service.removerPorNome(funcionarios, "João");
 
-        System.out.println("=== 3.3 - Lista de funcionários ===");
-        for (Funcionario funcionario : funcionarios) {
-            System.out.printf("%-10s | %s | %12s | %s%n",
-                    funcionario.getNome(),
-                    funcionario.getDataNascimento().format(FORMATO_DATA),
-                    FORMATO_SALARIO.format(funcionario.getSalario()),
-                    funcionario.getFuncao());
-        }
+        // 3.3 - Imprimir todos os funcionários com todas as suas informações
+        printer.imprimirLista("3.3 - Lista de funcionários", funcionarios);
 
-        System.out.println("Funcionarios cadstrados: " + funcionarios.size());
+        // 3.4 - Aplicar 10% de aumento de salário e atualizar a lista
+        service.aplicarAumento(funcionarios, PERCENTUAL_AUMENTO);
+        printer.imprimirLista("3.4 - Após aumento de 10%", funcionarios);
 
+        // 3.5 - Agrupar os funcionários por função em um MAP
+        Map<String, List<Funcionario>> funcionariosPorFuncao = service.agruparPorFuncao(funcionarios);
 
+        // 3.6 - Imprimir os funcionários agrupados por função
+        printer.imprimirAgrupados("3.6 - Funcionários por função", funcionariosPorFuncao);
 
-        BigDecimal percentualAumento = new BigDecimal("1.10");
-
-        funcionarios.forEach(funcionario ->
-                funcionario.setSalario(
-                        funcionario.getSalario()
-                                .multiply(percentualAumento)
-                                .setScale(2, RoundingMode.HALF_UP)
-                )
-        );
-
-        System.out.println("=== 3.4 - Após aumento de 10% ===");
-        funcionarios.forEach(funcionario ->
-                System.out.printf("%-10s | %12s%n",
-                        funcionario.getNome(),
-                        FORMATO_SALARIO.format(funcionario.getSalario()))
-        );
-
-
-
-
-        Map<String, List<Funcionario>> funcionariosPorFuncao =
-                funcionarios.stream()
-                        .collect(Collectors.groupingBy(Funcionario::getFuncao));
-
-
-        System.out.println("=== 3.6 - Funcionários por função ===");
-        funcionariosPorFuncao.forEach((funcao, lista) -> {
-            System.out.println("\n" + funcao + ":");
-            lista.forEach(funcionario ->
-                    System.out.printf("  %-10s | %s | %12s%n",
-                            funcionario.getNome(),
-                            funcionario.getDataNascimento().format(FORMATO_DATA),
-                            FORMATO_SALARIO.format(funcionario.getSalario()))
-            );
-        });
+        // 3.8 - Imprimir os funcionários que fazem aniversário nos meses 10 e 12
+        printer.imprimirLista("3.8 - Aniversariantes de outubro e dezembro",
+                service.aniversariantesNosMeses(funcionarios, 10, 12));
     }
 }
